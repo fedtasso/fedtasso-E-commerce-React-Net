@@ -53,10 +53,8 @@ export const LoadingSpinner = ({
                 El backend está "despertando"
               </Card.Title>
               <Card.Text className="mb-4">
-              <p><strong>Demora esperada:</strong> El servidor backend se está iniciando desde suspensión.<br />
-              Esto se debe al tipo de plan elegido en Render que suspende instancias inactivas.
-              </p>
-              
+              <strong>Demora esperada:</strong> El servidor backend se está iniciando desde suspensión.<br />
+              Esto se debe al tipo de plan elegido en Render que suspende instancias inactivas.              
               </Card.Text>
               
               <div className="text-start">

@@ -1,11 +1,10 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { API_URL_RESGISTER, API_URL_USERS } from "../config/constants";
+import { API_URL_LOGIN, API_URL_RESGISTER, API_URL_USERS } from "../config/constants";
 import { getAllUsers, userExist, userNotExist } from "../utils/authHelpers";
 export const AuthContext = createContext();
 const API_URL = API_URL_USERS;
-const API_URL_REGISTER = API_URL_RESGISTER
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -19,29 +18,49 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     setIsLoading(true);
     try {
-      // obtener usuarios db
-      const allUsers = await getAllUsers(API_URL);
+    const response = await fetch(API_URL_LOGIN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password
+      }),
+    });
 
-      //verificar usuario por email
-      const userData = userExist(allUsers, credentials);
+  if (!response.ok) {
+    if (response.status === 401) {
+        throw new Error('Credenciales incorrectas');
+      }
+      // Para otros errores HTTP
+      throw new Error("Error en la petición");
+    }
+      
+      const userData = await response.json();
 
-      //verificar usuario y contraseña
-      if (userData.password !== credentials.password)
-        throw new Error("Contraseña incorrecta");
-
-      //borrar password de objeto userData
-      const { password, ...safeUser } = userData;
-
+      // 1. Crear copia Segura
+    const safeUserData = {
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      avatar: userData.avatar,
+      phone: userData.phone,
+      role: userData.role,
+      createdAt: userData.createdAt,
+      lastLogin: userData.lastLogin,
+    };
+      
       //verificar si es administrador
-      if (userData.email === "admin@mail.com") {
+      if (safeUserData.role === "ADMIN") {
         setIsAdmin(true);
       }
 
       // dar permisos
-      setUser(safeUser);
+      setUser(safeUserData);
       setAuthorized(true);
-      localStorage.setItem("user", JSON.stringify(safeUser));
-      return { success: true, user: safeUser };
+      localStorage.setItem("user", JSON.stringify(safeUserData));
+      return { success: true, user: safeUserData };
     } catch (error) {
       // borrar usuario y autorizaciones
       setUser(null);
