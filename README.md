@@ -4,7 +4,7 @@ Este proyecto consiste en la implementación de un e-commerce del lado del front
 
 ---
 
-### Backend en https://github.com/fedtasso/E-commerce-Backend-SpringBoot.git
+### Backend en https://github.com/fedtasso/Ecommerce-Backend-Net
 
 ## Deploy
     https://fedtasso-ecommerce.netlify.app/
