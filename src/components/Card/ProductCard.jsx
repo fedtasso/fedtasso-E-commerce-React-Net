@@ -33,7 +33,11 @@ const ProductCard = ({ product }) => {
 
       <Card.Img
         variant="top"
-        src={product.image || "/placeholder-image.jpg"}
+        src={
+          product.image
+            ? `https://ecommerce-backend-net.onrender.com${product.image}`
+            : "/placeholder-image.jpg"
+}
         alt={product.title}
         className="p-3 bg-light"
         style={{
